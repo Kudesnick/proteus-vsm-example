@@ -30,6 +30,7 @@ private:
 	ICOMPONENT* cpt = NULL;
 };
 
+/* Вызов конструктора цифровой модели. Вызывается, если Proteus определил компонент как чисто цифровой */
 extern "C" {
 	IDSIMMODEL __declspec (dllexport)* createdsimmodel(CHAR* device, ILICENCESERVER* ils) {
 		return new vsmDsim;
@@ -40,6 +41,10 @@ extern "C" VOID __declspec (dllexport) deletedsimmodel(IDSIMMODEL* model) {
 	delete (IDSIMMODEL*)model;
 }
 
+/* Вызов конструктора активной модели. Вызывается, если Proteus определил что компонент будет отрисовываться
+средствами dll. Для этого прои добавлении компонента в пользовательскую библиотеку в его Script Block должен быть
+прописан параметр ACTIVE например так: {ACTIVE=VSMACTIVE,0,DLL}. В этом случае createdsimmodel не будет вызываться,
+а конструктор цифровой модели будет вызван из метода getdsimmodel возвращаемого объекта */
 extern "C" {
 	__declspec(dllexport) IACTIVEMODEL* createactivemodel(CHAR* device, ILICENCESERVER* ils) {
 		return new vsmActive;
